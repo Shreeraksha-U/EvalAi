@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EvalAI — Answer Intelligence</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="script.js" defer></script>
+<div class="wrapper">
+  <header>
+
+    <div class="logo-text">
+      <h1>EvalAI</h1>
+      <p>Answer Intelligence for Students</p>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('evaluate')">Evaluate My Answer</button>
+    <button class="tab" onclick="switchTab('analyze')">Post-Exam Analyzer</button>
+  </div>
+
+  <!-- Tab 1: Evaluate -->
+  <div id="tab-evaluate" class="panel active">
+    <div id="eval-form">
+      <div class="row-2">
+        <div class="field">
+          <label>Subject / Topic</label>
+          <input type="text" id="eval-subject" placeholder="e.g. Organic Chemistry, Data Structures" />
+        </div>
+        <div class="field">
+          <label>Total Marks</label>
+          <input type="text" id="eval-marks" placeholder="e.g. 10, 15, 20" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Question</label>
+        <textarea id="eval-question" rows="3" placeholder="Paste the exam question here"></textarea>
+      </div>
+      <div class="field">
+        <label>Your Answer</label>
+        <textarea id="eval-answer" rows="7" placeholder="Write or paste your answer here"></textarea>
+      </div>
+      <button class="btn" onclick="runEvaluate()">Evaluate Answer</button>
+      <div class="error-box" id="eval-error"></div>
+    </div>
+
+    <div class="loading" id="eval-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Analyzing your answer...</div>
+    </div>
+
+    <div class="results" id="eval-results">
+      <div class="results-header">
+        <span class="results-title">Evaluation Report</span>
+        <button class="reset-btn" onclick="resetEval()">New Evaluation</button>
+      </div>
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="score-val" id="r-est-marks">—</div>
+          <div class="score-label">Est. Marks</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="r-content">—</div>
+          <div class="score-label">Content</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="r-structure">—</div>
+          <div class="score-label">Structure</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="r-grammar">—</div>
+          <div class="score-label">Grammar</div>
+        </div>
+      </div>
+      <div id="r-metrics"></div>
+      <div class="feedback-box">
+        <h3>Detailed Feedback</h3>
+        <div class="content" id="r-feedback"></div>
+      </div>
+      <div class="feedback-box">
+        <h3>Key Suggestions</h3>
+        <div class="content" id="r-suggestions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: Analyze -->
+  <div id="tab-analyze" class="panel">
+    <div id="ana-form">
+      <div class="row-2">
+        <div class="field">
+          <label>Subject</label>
+          <input type="text" id="ana-subject" placeholder="e.g. Economics, Thermodynamics" />
+        </div>
+        <div class="field">
+          <label>Total Marks</label>
+          <input type="text" id="ana-total" placeholder="e.g. 20" />
+        </div>
+      </div>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Your Answer Sheet</label>
+          <div class="upload-zone" id="zone-student">
+            <input type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" onchange="handleFile(this,'student')" />
+            <div class="upload-icon">
+              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 1v9M5 7l3 3 3-3M2 12v2h12v-2"/></svg>
+            </div>
+            <div class="upload-label"><span>Click to upload</span> or drag here</div>
+            <div class="upload-hint">PDF, TXT, PNG, JPG</div>
+            <div class="upload-name" id="file-student-name"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Model / Ideal Answer</label>
+          <div class="upload-zone" id="zone-model">
+            <input type="file" accept=".pdf,.txt,.png,.jpg,.jpeg" onchange="handleFile(this,'model')" />
+            <div class="upload-icon">
+              <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 1v9M5 7l3 3 3-3M2 12v2h12v-2"/></svg>
+            </div>
+            <div class="upload-label"><span>Click to upload</span> or drag here</div>
+            <div class="upload-hint">PDF, TXT, PNG, JPG</div>
+            <div class="upload-name" id="file-model-name"></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="note-text">No file? Paste text directly below instead.</p>
+
+      <div class="row-2">
+        <div class="field">
+          <label>Or paste student answer</label>
+          <textarea id="ana-student-text" rows="5" placeholder="Paste your written answer here"></textarea>
+        </div>
+        <div class="field">
+          <label>Or paste model answer</label>
+          <textarea id="ana-model-text" rows="5" placeholder="Paste the model answer here"></textarea>
+        </div>
+      </div>
+
+      <button class="btn" onclick="runAnalyze()">Analyze My Performance</button>
+      <div class="error-box" id="ana-error"></div>
+    </div>
+
+    <div class="loading" id="ana-loading">
+      <div class="spinner"></div>
+      <div class="loading-text">Comparing your answer against the model...</div>
+    </div>
+
+    <div class="results" id="ana-results">
+      <div class="results-header">
+        <span class="results-title">Performance Analysis</span>
+        <button class="reset-btn" onclick="resetAna()">New Analysis</button>
+      </div>
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="score-val" id="a-likely">—</div>
+          <div class="score-label">Likely Score</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="a-coverage">—</div>
+          <div class="score-label">Coverage</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="a-accuracy">—</div>
+          <div class="score-label">Accuracy</div>
+        </div>
+        <div class="score-card">
+          <div class="score-val" id="a-extra">—</div>
+          <div class="score-label">Extra Points</div>
+        </div>
+      </div>
+
+      <div class="feedback-box">
+        <h3>Missing Points</h3>
+        <div id="a-missing"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="feedback-box">
+        <h3>Structure Issues</h3>
+        <div class="content" id="a-structure"></div>
+      </div>
+
+      <div class="feedback-box">
+        <h3>What You Did Well</h3>
+        <div id="a-good"></div>
+      </div>
+
+      <div class="feedback-box">
+        <h3>Score Breakdown</h3>
+        <div class="content" id="a-breakdown"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
