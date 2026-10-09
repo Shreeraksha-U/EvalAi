@@ -393,7 +393,7 @@
 
   .note-text {
     font-size: 12px;
-    color: var(--white-faint);
+    color: rgba(243, 172, 172, 0.863);
     margin-bottom: 14px;
   }
 

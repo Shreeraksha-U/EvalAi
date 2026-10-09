@@ -97,7 +97,7 @@ async function callAPI(prompt, fileContent = null, fileType = null) {
     throw new Error(
       error.error?.message ||
       error.message ||
-      'API request failed'
+      'Request failed'
     );
   }
 
@@ -338,7 +338,7 @@ Return this exact JSON:
   if (!studentText && !files.student) {
     showError(
       'ana-error',
-      'Please provide your answer — upload a file or paste text.'
+      'Please provide your answer - upload a file or paste text.'
     );
 
     return;
@@ -348,7 +348,7 @@ Return this exact JSON:
   if (!modelText && !files.model) {
     showError(
       'ana-error',
-      'Please provide the model answer — upload a file or paste text.'
+      'Please provide the model answer -  upload a file or paste text.'
     );
 
     return;
